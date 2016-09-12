@@ -25,8 +25,6 @@ DWORD FindProcessID(const wstring &processName)
 	HANDLE hSnapShot = INVALID_HANDLE_VALUE;
 	PROCESSENTRY32 pe;
 
-	//LoadLibraryW(L"C:\\TestDll.dll");
-
 	pe.dwSize = sizeof(pe);
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
 
