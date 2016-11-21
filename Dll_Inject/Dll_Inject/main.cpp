@@ -50,16 +50,19 @@ BOOL InjectDll(DWORD dwPID, const wstring &szDllName)
 		PROCESS_ALL_ACCESS,
 		FALSE, dwPID);
 	if (!hProcess)
+	{
+		cout << "OpenProcess Error pid = " << dwPID << ", errorcode = " << GetLastError() << endl;
 		return FALSE;
+	}
 
-// 	HANDLE hToken;
-// 	TOKEN_PRIVILEGES tp;
-// 	tp.PrivilegeCount = 1;
-// 	LookupPrivilegeValue(NULL, L"SeDebugPrivilege", &tp.Privileges[0].Luid);
-// 	tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-// 	OpenProcessToken(hProcess, TOKEN_ADJUST_PRIVILEGES, &hToken);
-// 	AdjustTokenPrivileges(hToken, FALSE, &tp, NULL, NULL, NULL);
-// 	CloseHandle(hToken);
+ 	//HANDLE hToken;
+ 	//TOKEN_PRIVILEGES tp;
+ 	//tp.PrivilegeCount = 1;
+ 	//LookupPrivilegeValue(NULL, L"SeDebugPrivilege", &tp.Privileges[0].Luid);
+ 	//tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+ 	//OpenProcessToken(hProcess, TOKEN_ADJUST_PRIVILEGES, &hToken);
+ 	//AdjustTokenPrivileges(hToken, FALSE, &tp, NULL, NULL, NULL);
+ 	//CloseHandle(hToken);
 
 	LPVOID pRemoteBuf = VirtualAllocEx(hProcess, NULL,
 		szDllName.length() * 2 + 2,
@@ -81,7 +84,8 @@ BOOL InjectDll(DWORD dwPID, const wstring &szDllName)
 	HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0,
 		pThreadProc, pRemoteBuf, 0, NULL);
 	DWORD err = GetLastError();
-	cout << err << endl;
+
+	cout << "inject dll - error code = " << err << endl;
 	WaitForSingleObject(hThread, INFINITE);
 
 	CloseHandle(hThread);
@@ -116,5 +120,5 @@ void main(int argc, char *argv[])
 
 	InjectDll(dwPID, dllName);
 
-	getchar();
+	//getchar();
 }
